@@ -1,0 +1,14 @@
+{
+  "name": "test-changesets",
+  "scripts": {
+    "release:packages": "changeset publish"
+  },
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "typescript": "^5.4.3"
+  }
+}
