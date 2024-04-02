@@ -1,5 +1,5 @@
 {
-  "name": "test-changesets",
+  "name": "test-changesets-action",
   "version": "0.1.0",
   "scripts": {
     "release:packages": "changeset publish"
