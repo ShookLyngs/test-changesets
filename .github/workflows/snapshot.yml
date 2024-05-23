@@ -60,6 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish snapshots to npm
-        run: npx changeset publish --no-git-tag --tag snap
+        run: pnpm publish -r --tag snap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
