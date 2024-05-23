@@ -1,5 +1,13 @@
 # test-changesets-action
 
+## 0.2.0
+
+### Minor Changes
+
+- [`d285909`](https://github.com/ShookLyngs/test-changesets/commit/d285909636376353894bf3b57dbb4ba9869a5a8b): Change ver variable to "0.2.0" ([@ShookLyngs](https://github.com/ShookLyngs))
+
+- [#8](https://github.com/ShookLyngs/test-changesets/pull/8): Change content to "fixed commit 2" ([@ShookLyngs](https://github.com/ShookLyngs))
+
 ## 0.1.1
 
 ### Patch Changes
