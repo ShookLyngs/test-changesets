@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
+          registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -44,16 +44,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Create .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm i
 
       - name: Version packages as "package@0.0.0-snap-{timestamp}"
         run: npx changeset version --snapshot snap
@@ -63,6 +60,5 @@ jobs:
       - name: Publish snapshots to npm
         run: pnpm -r publish --report-summary --no-git-checks --tag snap --access public
         env:
-          NPM_CONFIG_USERCONFIG: /home/runner/.npmrc
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
