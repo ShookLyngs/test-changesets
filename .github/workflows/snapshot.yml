@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -44,21 +43,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Install dependencies
         run: pnpm i
+
+      - name: Add snapshot changeset
+        run: |
+          cat << EOF > "snap-release-changeset.md"
+            ---
+            "@rgbpp-sdk/btc": patch
+            ---
+            Add snapshot changeset for snapshot releases
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Version packages as "package@0.0.0-snap-{timestamp}"
         run: npx changeset version --snapshot snap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish snapshots to npm
-        run: npx changeset publish --no-git-tag --tag snap
+      - name: Publish to npm (ignore GitHub)
+        uses: changesets/action@v1
+        id: changesets
+        with:
+          publish: npx changeset publish --no-git-tag --tag snap
+          createGithubReleases: false
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
