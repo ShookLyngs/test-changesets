@@ -48,7 +48,10 @@ jobs:
         run: pnpm i
 
       - name: Create .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" < $HOME/.npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -58,9 +61,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish snapshots to npm
-        run: |
-          npm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
-          pnpm -r publish --report-summary --no-git-checks --tag snap --access public
+        run: pnpm -r publish --report-summary --no-git-checks --tag snap --access public
         env:
+          NPM_CONFIG_USERCONFIG: $HOME/.npmrc
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
