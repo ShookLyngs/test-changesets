@@ -51,7 +51,7 @@ jobs:
         uses: seek-oss/changesets-snapshot@v0
         with:
           pre-publish: |
-            git reset --hard HEAD \
+            git reset --hard HEAD && \
             changeset version --snapshot snap
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
