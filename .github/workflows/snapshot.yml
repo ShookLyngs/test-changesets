@@ -52,7 +52,7 @@ jobs:
         with:
           pre-publish: |
             git reset --hard HEAD \
-            changeset version --snapshot --tag snap
+            changeset version --snapshot snap
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
