@@ -55,11 +55,11 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Version packages as "package@0.0.0-snap-{timestamp}"
-        run: changeset version --snapshot snap
+        run: npx changeset version --snapshot snap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish snapshots to npm
-        run: changeset publish --no-git-tag --tag snap
+        run: npx changeset publish --no-git-tag --tag snap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
