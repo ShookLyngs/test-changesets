@@ -54,8 +54,6 @@ jobs:
             ---
             Add snapshot changeset for snapshot releases
           EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Version packages as "package@0.0.0-snap-{timestamp}"
         run: npx changeset version --snapshot snap
@@ -66,7 +64,7 @@ jobs:
         uses: changesets/action@v1
         id: changesets
         with:
-          publish: npx changeset publish --no-git-tag --tag snap
+          publish: pnpm run release:snapshot
           createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

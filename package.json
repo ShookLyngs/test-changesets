@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "scripts": {
     "release:packages": "changeset publish",
-    "release:snapshot": "git reset --hard HEAD && npx changeset version --snapshot snap"
+    "release:snapshot": "changeset publish --no-git-tag --tag snap"
   },
   "main": "src/index.js",
   "files": [
