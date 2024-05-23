@@ -46,9 +46,6 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Build packages
-        run: pnpm run build:packages
-
       - name: Publish to npm (ignore GitHub)
         id: changesets
         uses: seek-oss/changesets-snapshot@v0
