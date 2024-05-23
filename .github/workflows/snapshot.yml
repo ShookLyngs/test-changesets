@@ -63,6 +63,6 @@ jobs:
       - name: Publish snapshots to npm
         run: pnpm -r publish --report-summary --no-git-checks --tag snap --access public
         env:
-          NPM_CONFIG_USERCONFIG: ${{ env.HOME }}/.npmrc
+          NPM_CONFIG_USERCONFIG: /home/runner/.npmrc
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
