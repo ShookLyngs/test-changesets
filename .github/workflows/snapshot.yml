@@ -59,7 +59,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check npm user
+        run: npm whoami
+
       - name: Publish snapshots to npm
         run: pnpm publish --recursive --report-summary --no-git-checks --tag snap
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
