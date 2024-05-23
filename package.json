@@ -2,7 +2,8 @@
   "name": "test-changesets-action",
   "version": "0.1.1",
   "scripts": {
-    "release:packages": "changeset publish"
+    "release:packages": "changeset publish",
+    "release:snapshot": "git reset --hard HEAD && npx changeset version --snapshot snap"
   },
   "main": "src/index.js",
   "files": [
