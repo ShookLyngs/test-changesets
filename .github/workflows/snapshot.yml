@@ -46,13 +46,20 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
+      - name: Create .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Version packages as "package@0.0.0-snap-{timestamp}"
         run: pnpm changeset version --snapshot snap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to NPM
+      - name: Publish snapshots to NPM
         run: pnpm changeset publish --no-git-tag --snapshot
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
