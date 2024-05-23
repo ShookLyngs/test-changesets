@@ -64,7 +64,7 @@ jobs:
         uses: changesets/action@v1
         id: changesets
         with:
-          publish: pnpm run release:snapshot
+          publish: pnpm changeset publish --no-git-tag --tag snap
           createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
