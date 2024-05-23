@@ -48,7 +48,7 @@ jobs:
 
       - name: Add snapshot changeset
         run: |
-          cat << EOF > "snap-release-changeset.md"
+          cat << EOF > "./changeset/snap-release-changeset.md"
             ---
             "@rgbpp-sdk/btc": patch
             ---
@@ -69,4 +69,5 @@ jobs:
           publish: npx changeset publish --no-git-tag --tag snap
           createGithubReleases: false
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
