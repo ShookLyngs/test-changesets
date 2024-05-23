@@ -50,7 +50,7 @@ jobs:
         run: |
           cat << EOF > ".changeset/snap-release-changeset.md"
             ---
-            "@rgbpp-sdk/btc": patch
+            "test-changesets-action": patch
             ---
             Add snapshot changeset for snapshot releases
           EOF
