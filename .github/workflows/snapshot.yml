@@ -75,6 +75,13 @@ jobs:
           echo "published=${{ steps.changesets.outputs.published }}"
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+
+
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
         if: ${{ steps.changesets.outputs.published == 'true' }}
