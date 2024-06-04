@@ -91,20 +91,21 @@ jobs:
             const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`)
             const body = ['### New package releases', '| Package | Version |', '| --- | --- |', packagesTable].join('\n')
             
-            console.log(process.env.IS_PULL);
-            console.log(context.sha);
+            console.log('is pull request:', process.env.IS_PULL);
+            console.log('comment body:', body);
+            
             if (process.env.IS_PULL == 'true') {
               github.rest.issues.createComment({
                 issue_number: context.payload.pull_request.number,
                 owner: context.repo.owner,  
                 repo: context.repo.repo,
-                body: process.env.BODY,
+                body: body,
               });
             } else {
               github.rest.repos.createCommitComment({
                 commit_sha: context.sha,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: process.env.BODY,
+                body: body,
               });
             }
