@@ -90,6 +90,7 @@ jobs:
         env:
           PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           result-encoding: string
           script: |
             const packages = JSON.parse(process.env.PACKAGES)
