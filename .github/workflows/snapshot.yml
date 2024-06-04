@@ -88,8 +88,8 @@ jobs:
           result-encoding: string
           script: |
             const packages = JSON.parse(process.env.PACKAGES)
-            const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`)
-            const body = ['### New package releases', '| Package | Version |', '| --- | --- |', packagesTable].join('\n')
+            const packagesTable = packages.map((p) => `| ${p.name} | \`${p.version}\` |`)
+            const body = ['New package releases:', '| Name | Version |', '| --- | --- |', packagesTable].join('\n')
             
             console.log('is pull request:', process.env.IS_PULL);
             console.log('comment body:', body);
