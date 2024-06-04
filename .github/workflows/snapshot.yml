@@ -81,10 +81,11 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Echo pull request number
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        env:
+          JSON: ${{ toJson(github.event.pull_request) }}
         run: |
-          echo "EVEN_NAMe=${{ github.event_name }}"
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}"
+          echo "EVENT_NAME=${{ github.event_name }}"
+          echo "$JSON"
 
       - name: Echo pull request number
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
