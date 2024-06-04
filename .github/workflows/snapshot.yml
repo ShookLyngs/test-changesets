@@ -4,9 +4,9 @@ name: Release Snapshots
 
 on:
   workflow_dispatch:
-  pull_request:
-    types:
-      - closed
+  push:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -77,49 +77,34 @@ jobs:
           echo "published=${{ steps.changesets.outputs.published }}"
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
-      - name: Check github-script context
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        env:
-          PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
-        with:
-          script: |
-            const packages = JSON.parse(process.env.PACKAGES)
-            console.log(typeof process.env.PACKAGES);
-            console.log(typeof packages);
-            console.log(packages);
-
       - name: Create comment body
         uses: actions/github-script@v7
         id: comment-body
         if: steps.changesets.outputs.published
         env:
           PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          IS_PULL: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged }}
         with:
           result-encoding: string
           script: |
             const packages = JSON.parse(process.env.PACKAGES)
             const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`)
-            return ['| Package | Version |', '| --- | --- |', packagesTable].join('\n')
-
-      - name: Create comment to pull request
-        uses: actions/github-script@v7
-        if: steps.changesets.outputs.published && github.event_name == 'pull_request' && github.event.pull_request.merged
-        env:
-          PULL_ID: ${{ github.event.pull_request.number }}
-          BODY: ${{ steps.comment-body.outputs.result }}
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,  
-              repo: context.repo.repo,
-              body: process.env.BODY,
-            });
-
-      - name: Create comment to commit
-        uses: peter-evans/commit-comment@v3
-        if: steps.changesets.outputs.published && github.event_name != 'pull_request'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: ${{ steps.comment-body.outputs.result }}
+            const body = ['### New package releases', '| Package | Version |', '| --- | --- |', packagesTable].join('\n')
+            
+            console.log(process.env.IS_PULL);
+            console.log(context.sha);
+            if (process.env.IS_PULL == 'true') {
+              github.rest.issues.createComment({
+                issue_number: context.payload.pull_request.number,
+                owner: context.repo.owner,  
+                repo: context.repo.repo,
+                body: process.env.BODY,
+              });
+            } else {
+              github.rest.repos.createCommitComment({
+                commit_sha: context.sha,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: process.env.BODY,
+              });
+            }
