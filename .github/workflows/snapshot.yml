@@ -92,7 +92,7 @@ jobs:
           script: |
             const head = '| Package | Version |';
             const separator = '| --- | --- |';
-            const rows = JSON.stringify(process.env.PACKAGES).map(({ name, version }) => {
+            const rows = JSON.parse(process.env.PACKAGES).map(({ name, version }) => {
               return `| ${pkg} | ${version} |`;
             });
             return [head, separator, ...rows].join('\n');
