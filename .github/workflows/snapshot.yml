@@ -79,11 +79,13 @@ jobs:
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
       - name: Check pull_request number
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}"
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}"
+          echo "PR=${{ github.event.pull_request }}"
 
       - name: Create comment body
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
