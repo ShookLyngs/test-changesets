@@ -90,6 +90,7 @@ jobs:
         env:
           PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         with:
+          result-encoding: string
           script: |
             const packages = JSON.parse(process.env.PACKAGES)
             const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`)
@@ -103,7 +104,7 @@ jobs:
           BODY: ${{ steps.comment-body.outputs.result }}
         with:
           script: |
-            await github.rest.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.payload.pull_request.number,
               owner: context.repo.owner,  
               repo: context.repo.repo,
