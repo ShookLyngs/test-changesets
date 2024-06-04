@@ -84,7 +84,7 @@ jobs:
           script: |
             const packages = JSON.parse(process.env.PACKAGES)
             const packagesTable = packages.map((p) => `| ${p.name} | \`${p.version}\` |`)
-            const body = ['New official package versions of rgbpp-sdk have been released:', '| Name | Version |', '| --- | --- |', packagesTable].join('\n')
+            const body = ['New official package version have been released:', '| Name | Version |', '| --- | --- |', packagesTable].join('\n')
             github.rest.repos.createCommitComment({
               commit_sha: context.sha,
               owner: context.repo.owner,
