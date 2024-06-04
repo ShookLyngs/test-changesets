@@ -79,10 +79,11 @@ jobs:
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
       - name: Check pull_request number
-        if: github.event_name == 'pull_request'
         run: |
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}"
-          echo "PR=${{ github.event.pull_request }}"
+          echo "prNumber=${{ github.event.pull_request.number }}"
+          echo "pr=${{ github.event.pull_request }}"
+          echo "eventName=${{ github.event_name }}"
+          echo "event=${{ github.event }}"
 
       - name: Create comment body
         if: github.event_name == 'pull_request'
