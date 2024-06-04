@@ -7,9 +7,6 @@ on:
   pull_request:
     types:
       - closed
-  push:
-    branches:
-      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -80,10 +77,10 @@ jobs:
 
       - name: Check pull_request number
         run: |
+          echo "pullRequest=${{ github.event.pull_request }}"
           echo "prNumber=${{ github.event.pull_request.number }}"
-          echo "pr=${{ github.event.pull_request }}"
           echo "eventName=${{ github.event_name }}"
-          echo "event=${{ github.event }}"
+          echo "event=${{ toJSON(github.event) }}"
 
       - name: Create comment body
         if: github.event_name == 'pull_request'
