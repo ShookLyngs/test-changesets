@@ -4,9 +4,9 @@ name: Release Snapshots
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - closed
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
