@@ -78,28 +78,43 @@ jobs:
           echo "published=${{ steps.changesets.outputs.published }}"
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - name: Echo pull request number
-        env:
-          JSON: ${{ toJson(github.event.pull_request) }}
-        run: |
-          echo "EVENT_NAME=${{ github.event_name }}"
-          echo "$JSON"
-
-      - name: Echo pull request number
+      - name: Create pull_request comment
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}"
 
+      - name: Create comment in pull_request
+        uses: actions/github-script@v7
+        id: comment-body
+        if: steps.changesets.outputs.published
+        env:
+          PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        with:
+          script: |
+            const head = '| Package | Version |';
+            const separator = '| --- | --- |';
+            const rows = JSON.stringify(process.env.PACKAGES).map(({ name, version }) => {
+              return `| ${pkg} | ${version} |`;
+            });
+            return [head, separator, ...rows].join('\n');
+
+      - name: Create comment in pull_request
+        if: steps.changesets.outputs.published && github.event_name == 'pull_request' && github.event.pull_request.merged
+        uses: actions/github-script@v7
+        env:
+          PULL_ID: ${{ github.event.pull_request.number }}
+          BODY: ${{ steps.comment-body.outputs.result }}
+        with:
+          script: |
+            github.issues.createComment({
+              repo: context.repo.repo,
+              owner: context.repo.owner,  
+              issue_number: process.env.PULL_ID,
+              body: process.env.BODY,
+            });
+
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
-        if: ${{ steps.changesets.outputs.published == 'true' }}
+        if: steps.changesets.outputs.published && github.event_name != 'pull_request'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            ```json
-            ${{ steps.changesets.outputs.publishedPackages }}
-            ```
+          body: ${{ steps.comment-body.outputs.result }}
