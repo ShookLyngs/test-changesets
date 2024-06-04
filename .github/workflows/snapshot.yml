@@ -78,21 +78,29 @@ jobs:
           echo "published=${{ steps.changesets.outputs.published }}"
           echo "publishedPackages=${{ steps.changesets.outputs.publishedPackages }}"
 
-      - name: Create pull_request comment
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged
+      - name: Check pull_request number
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}"
 
-      - name: Create comment in pull_request
+      - name: Create comment body
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log(context.payload.pull_request);
+            console.log(context.repo);
+
+      - name: Create comment body
         uses: actions/github-script@v7
         id: comment-body
-        if: steps.changesets.outputs.published
+        if: steps.changesets.outputs.published == true
         env:
           PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         with:
           script: |
-            const packages = JSON.parse(process.env.PACKAGES);
-            const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`);
-            return ['| Package | Version |', '| --- | --- |', packagesTable].join('\n);
+            const packages = JSON.parse(process.env.PACKAGES)
+            const packagesTable = packages.map((p) => `| ${p.name} | ${p.version} |`)
+            return ['| Package | Version |', '| --- | --- |', packagesTable].join('\n)
 
       - name: Create comment to pull request
         uses: actions/github-script@v7
@@ -103,7 +111,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.issues.createComment({
+            await github.rest.issues.createComment({
               repo: context.repo.repo,
               owner: context.repo.owner,  
               issue_number: process.env.PULL_ID,
