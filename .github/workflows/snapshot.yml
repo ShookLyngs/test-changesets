@@ -92,10 +92,11 @@ jobs:
           script: |
             const head = '| Package | Version |';
             const separator = '| --- | --- |';
-            const rows = JSON.parse(process.env.PACKAGES).map(({ name, version }) => {
-              return `| ${pkg} | ${version} |`;
-            });
-            return [head, separator, ...rows].join('\n');
+            const table = [head, separator];
+            for (const package of JSON.parse(process.env.PACKAGES)) {
+              table.push(`| ${pkg} | ${version} |`);
+            }
+            return table.join('\n');
 
       - name: Create comment in pull_request
         if: steps.changesets.outputs.published && github.event_name == 'pull_request' && github.event.pull_request.merged
