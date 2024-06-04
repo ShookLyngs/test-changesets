@@ -80,7 +80,9 @@ jobs:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-
+      - name: Echo pull request number
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}"
 
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
