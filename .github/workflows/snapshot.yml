@@ -81,7 +81,13 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Echo pull request number
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }}
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        run: |
+          echo "EVEN_NAMe=${{ github.event_name }}"
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}"
+
+      - name: Echo pull request number
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}"
 
       - name: Create commit comment
